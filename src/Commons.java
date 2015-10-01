@@ -12,9 +12,9 @@ public final class Commons {
     public static final int MEDIUM_INVADER_ROWS = 2;
     public static final int LARGE_INVADER_ROWS = 2;
 
-    public static final int SMALL_INVADER_COLUMNS = 12;
-    public static final int MEDIUM_INVADER_COLUMNS = 12;
-    public static final int LARGE_INVADER_COLUMNS = 12;
+    public static final int SMALL_INVADER_COLUMNS = 11;
+    public static final int MEDIUM_INVADER_COLUMNS = 11;
+    public static final int LARGE_INVADER_COLUMNS = 11;
 
     public static final int SMALL_INVADER_PADDING = 16;
     public static final int MEDIUM_INVADER_PADDING = 8;
