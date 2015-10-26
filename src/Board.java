@@ -6,16 +6,17 @@ import java.util.ArrayList;
 
 public class Board extends JPanel implements Runnable {
     private Player player = Player.getInstance();
-    private ArrayList<Invader> invaders;
+    private Invaders invaders;
 
     private Thread animationThread;
     private Dimension dimensions;
     private int invadersDirectionX = 1;
-    private int invadersDirectionY = 0;
+//    private int invadersDirectionY = 0;
     private boolean isRunning = false;
 
     public Board() {
         addKeyListener(new ControlsAdapter());
+        invaders = new Invaders();
 
         dimensions = new Dimension(Commons.BOARD_WIDTH, Commons.BOARD_HEIGHT);
         setBackground(Color.black);
@@ -49,27 +50,28 @@ public class Board extends JPanel implements Runnable {
                 return;
             }
 
-            // Change invaders direction if border is reached and checks for invasion
-            for (Invader invader : invaders) {
-                if (invader.isVisible()) {
-                    if (invader.getCoordinates().getY() > Commons.BOARD_HEIGHT - Commons.BOARD_BORDER - invader.getImageIcon().getIconHeight() - player.getImageIcon().getIconHeight()) {
-                        isRunning = false;
-                        printMessage(Commons.INVASION_TEXT, graphics);
-                        Sound.play(this.getClass().getResource(Commons.GAME_OVER_SOUND));
-                        return;
-                    }
-                    if (invadersDirectionX == 1 && invader.getCoordinates().getX() >= Commons.BOARD_WIDTH - Commons.BOARD_BORDER - invader.getImageIcon().getIconWidth()) {
-                        invadersDirectionX = -1;
-                        invadersDirectionY = 1;
-                        break;
-                    }
-                    if (invadersDirectionX == -1 && invader.getCoordinates().getX() <= Commons.BOARD_BORDER) {
-                        invadersDirectionX = 1;
-                        invadersDirectionY = 1;
-                        break;
-                    }
-                }
+            // if invasion
+            if (invaders.isInvasion()) {
+                isRunning = false;
+                printMessage(Commons.INVASION_TEXT, graphics);
+                Sound.play(this.getClass().getResource(Commons.GAME_OVER_SOUND));
             }
+
+            // Change invaders direction if border is reached and checks for invasion
+//            for (Invader invader : invaders) {
+//                if (invader.isVisible()) {
+//                    if (invadersDirectionX == 1 && invader.getCoordinates().getX() >= Commons.BOARD_WIDTH - Commons.BOARD_BORDER - invader.getImageIcon().getIconWidth()) {
+//                        invadersDirectionX = -1;
+////                        invadersDirectionY = 1;
+//                        break;
+//                    }
+//                    if (invadersDirectionX == -1 && invader.getCoordinates().getX() <= Commons.BOARD_BORDER) {
+//                        invadersDirectionX = 1;
+////                        invadersDirectionY = 1;
+//                        break;
+//                    }
+//                }
+//            }
 
             // Green ground line
             graphics.setColor(Color.green);
@@ -80,18 +82,18 @@ public class Board extends JPanel implements Runnable {
             player.paint(graphics, this);
 
             // Move invaders down
-            for (Invader invader : invaders) {
-                if (invadersDirectionY == 1) {
-                    invader.getCoordinates().moveDown(invader.getImageIcon().getIconHeight());
-                    invader.incrementRow();
-                    invader.getCoordinates().setStep((int) (Math.floor(invader.getRow() / Commons.INVADER_GET_FASTER_AFTER_ROWS) + 1));
-                } else {
-                    invader.setDirectionX(invadersDirectionX);
-                    invader.move();
-                }
-                invader.paint(graphics, this);
-            }
-            invadersDirectionY = 0;
+//            for (Invader invader : invaders) {
+//                if (invadersDirectionY == 1) {
+//                    invader.getCoordinates().moveDown(invader.getImageIcon().getIconHeight());
+//                    invader.incrementRow();
+//                    invader.getCoordinates().setStep((int) (Math.floor(invader.getRow() / Commons.INVADER_GET_FASTER_AFTER_ROWS) + 1));
+//                } else {
+//                    invader.setDirectionX(invadersDirectionX);
+                    invaders.move();
+//                }
+                invaders.paint(graphics, this);
+//            }
+//            invadersDirectionY = 0;
 
             // Handle player missile killing invaders
             handleMissile();
@@ -120,11 +122,10 @@ public class Board extends JPanel implements Runnable {
     }
 
     public void initialize() {
-        invaders = new ArrayList<>();
         int row = 0;
         for (int i = 0; i < Commons.SMALL_INVADER_ROWS; i++) {
             for (int j = 0; j < Commons.SMALL_INVADER_COLUMNS; j++) {
-                Invader invader = new SmallInvader();
+                Invader invader = InvaderFactory.createInvader(InvaderType.SMALL);
                 invader.setCoordinates(
                         new Coordinates(
                                 (Commons.SMALL_INVADER_PADDING + invader.getImageIcon().getIconWidth()) * j + Commons.SMALL_INVADER_PADDING / 4 + Commons.BOARD_BORDER,
@@ -137,7 +138,7 @@ public class Board extends JPanel implements Runnable {
         }
         for (int i = 0; i < Commons.MEDIUM_INVADER_ROWS; i++) {
             for (int j = 0; j < Commons.MEDIUM_INVADER_COLUMNS; j++) {
-                Invader invader = new MediumInvader();
+                Invader invader = InvaderFactory.createInvader(InvaderType.MEDIUM);
                 invader.setCoordinates(
                         new Coordinates(
                                 (Commons.MEDIUM_INVADER_PADDING + invader.getImageIcon().getIconWidth()) * j + Commons.BOARD_BORDER,
@@ -150,7 +151,7 @@ public class Board extends JPanel implements Runnable {
         }
         for (int i = 0; i < Commons.LARGE_INVADER_ROWS; i++) {
             for (int j = 0; j < Commons.LARGE_INVADER_COLUMNS; j++) {
-                Invader invader = new LargeInvader();
+                Invader invader = InvaderFactory.createInvader(InvaderType.LARGE);
                 invader.setCoordinates(
                         new Coordinates(
                                 (Commons.LARGE_INVADER_PADDING + invader.getImageIcon().getIconWidth()) * j + Commons.BOARD_BORDER,
@@ -210,28 +211,8 @@ public class Board extends JPanel implements Runnable {
     public void handleMissile() {
         if (player.getMissile().isVisible()) {
             Missile missile = player.getMissile();
-            for (Invader invader : invaders) {
-                if (invader.isVisible() && missile.isVisible()) {
-                    if (missile.getCoordinates().getX() >= invader.getCoordinates().getX() &&
-                            missile.getCoordinates().getX() <= invader.getCoordinates().getX() + invader.getImageIcon().getIconWidth() &&
-                            missile.getCoordinates().getY() >= invader.getCoordinates().getY() &&
-                            missile.getCoordinates().getY() <= invader.getCoordinates().getY() + invader.getImageIcon().getIconHeight()) {
-                        invader.die();
-                        missile.die();
-                        player.addKill();
-                        player.addScore(invader.getPoints());
 
-                        // If first kill
-                        if (player.getKills() == 1) {
-                            Sound.play(this.getClass().getResource(Commons.FIRSTBLOOD_SOUND));
-                        } else
-                            // If missile is above invader middle
-                            if (missile.getCoordinates().getY() <= invader.getCoordinates().getY() + invader.getImageIcon().getIconHeight() / 2) {
-                                Sound.play(this.getClass().getResource(Commons.HEADSHOT_SOUND));
-                            }
-                    }
-                }
-            }
+            invaders.handleMissiles();
         }
     }
 

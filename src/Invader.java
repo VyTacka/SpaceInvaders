@@ -3,20 +3,36 @@ import java.awt.*;
 import java.awt.image.ImageObserver;
 import java.util.Random;
 
-public abstract class Invader extends BoardObject {
+public abstract class Invader extends BoardObject implements MovableInvader {
+    private InvaderType model = null;
+
     protected Laser laser;
     protected int points;
     protected int directionX;
+    protected int directionY;
     protected int row;
     private Random random;
 
-    public Invader() {
+    public Invader(InvaderType model) {
         super();
-
+        this.model = model;
         this.directionX = 1;
+        this.directionY = 0;
         this.laser = new Laser();
         this.random = new Random();
         this.row = 0;
+        this.construct();
+    }
+
+    // Do subclass level processing in this method
+    protected abstract void construct();
+
+    public InvaderType getModel() {
+        return model;
+    }
+
+    public void setModel(InvaderType model) {
+        this.model = model;
     }
 
     public int getPoints() {
@@ -61,9 +77,11 @@ public abstract class Invader extends BoardObject {
 
     public void move() {
         if (directionX == 1 && coordinates.getX() < Commons.BOARD_WIDTH - Commons.BOARD_BORDER - this.imageIcon.getIconWidth()) {
-            coordinates.moveRight();
+            moveRight();
         } else if (directionX == -1 && coordinates.getX() > Commons.BOARD_BORDER) {
-            coordinates.moveLeft();
+            moveLeft();
+        } else {
+            moveDown();
         }
 
         if (laser.isVisible()) {
@@ -71,7 +89,22 @@ public abstract class Invader extends BoardObject {
         }
     }
 
-    public void shoot() {
+    public void moveLeft() {
+        coordinates.moveLeft();
+    }
+
+    public void moveRight() {
+        coordinates.moveRight();
+    }
+
+    public void moveDown() {
+        coordinates.moveDown(this.imageIcon.getIconHeight());
+        incrementRow();
+        directionX *= -1;
+//        coordinates.setStep((int) (Math.floor(row / Commons.INVADER_GET_FASTER_AFTER_ROWS) + 1));
+    }
+
+    private void shoot() {
         this.laser.setCoordinates(
                 new Coordinates(
                         this.coordinates.getX() + this.imageIcon.getIconWidth() / 2,
