@@ -32,15 +32,16 @@ public class Invaders implements MovableInvader {
     @Override
     public void move() {
         for (Invader invader : invaders) {
-            if (invader.directionX == 1 && invader.getCoordinates().getX() < Commons.BOARD_WIDTH - Commons.BOARD_BORDER - invader.getImageIcon().getIconWidth()) {
-                invader.moveRight();
-            } else if (invader.directionX == -1 && invader.getCoordinates().getX() > Commons.BOARD_BORDER) {
-                invader.moveLeft();
-            } else {
-                moveDown();
-                return;
+            if (invader.isVisible()) {
+                if (invader.directionX == 1 && invader.getCoordinates().getX() < Commons.BOARD_WIDTH - Commons.BOARD_BORDER - invader.getImageIcon().getIconWidth()) {
+                    invader.moveRight();
+                } else if (invader.directionX == -1 && invader.getCoordinates().getX() > Commons.BOARD_BORDER) {
+                    invader.moveLeft();
+                } else {
+                    moveDown();
+                    return;
+                }
             }
-
             invader.laser.move();
         }
     }
