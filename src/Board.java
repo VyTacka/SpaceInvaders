@@ -10,8 +10,6 @@ public class Board extends JPanel implements Runnable {
 
     private Thread animationThread;
     private Dimension dimensions;
-    private int invadersDirectionX = 1;
-//    private int invadersDirectionY = 0;
     private boolean isRunning = false;
 
     public Board() {
@@ -57,22 +55,6 @@ public class Board extends JPanel implements Runnable {
                 Sound.play(this.getClass().getResource(Commons.GAME_OVER_SOUND));
             }
 
-            // Change invaders direction if border is reached and checks for invasion
-//            for (Invader invader : invaders) {
-//                if (invader.isVisible()) {
-//                    if (invadersDirectionX == 1 && invader.getCoordinates().getX() >= Commons.BOARD_WIDTH - Commons.BOARD_BORDER - invader.getImageIcon().getIconWidth()) {
-//                        invadersDirectionX = -1;
-////                        invadersDirectionY = 1;
-//                        break;
-//                    }
-//                    if (invadersDirectionX == -1 && invader.getCoordinates().getX() <= Commons.BOARD_BORDER) {
-//                        invadersDirectionX = 1;
-////                        invadersDirectionY = 1;
-//                        break;
-//                    }
-//                }
-//            }
-
             // Green ground line
             graphics.setColor(Color.green);
             graphics.drawLine(0, Commons.BOARD_HEIGHT - Commons.BOARD_BORDER, Commons.BOARD_WIDTH, Commons.BOARD_HEIGHT - Commons.BOARD_BORDER);
@@ -81,19 +63,9 @@ public class Board extends JPanel implements Runnable {
             player.move();
             player.paint(graphics, this);
 
-            // Move invaders down
-//            for (Invader invader : invaders) {
-//                if (invadersDirectionY == 1) {
-//                    invader.getCoordinates().moveDown(invader.getImageIcon().getIconHeight());
-//                    invader.incrementRow();
-//                    invader.getCoordinates().setStep((int) (Math.floor(invader.getRow() / Commons.INVADER_GET_FASTER_AFTER_ROWS) + 1));
-//                } else {
-//                    invader.setDirectionX(invadersDirectionX);
-                    invaders.move();
-//                }
-                invaders.paint(graphics, this);
-//            }
-//            invadersDirectionY = 0;
+            // Move invaders
+            invaders.move();
+            invaders.paint(graphics, this);
 
             // Handle player missile killing invaders
             handleMissile();
@@ -210,8 +182,6 @@ public class Board extends JPanel implements Runnable {
 
     public void handleMissile() {
         if (player.getMissile().isVisible()) {
-            Missile missile = player.getMissile();
-
             invaders.handleMissiles();
         }
     }
