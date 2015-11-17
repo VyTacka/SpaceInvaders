@@ -3,8 +3,10 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.ImageObserver;
 
-public class Player extends BoardObject {
+public class Player extends BoardObject implements Shooter {
     private static Player ourInstance = new Player();
+    private ShootStrategy shootStrategy;
+
     protected Missile missile;
     protected int lives;
     protected int score;
@@ -29,6 +31,7 @@ public class Player extends BoardObject {
                 Commons.PLAYER_STEP_SIZE
         );
         this.missile = new Missile();
+        this.shootStrategy = new ShootMissile();
     }
 
     public static Player getInstance() {
@@ -121,17 +124,7 @@ public class Player extends BoardObject {
     }
 
     public void shoot() {
-        if (this.visible && !this.missile.isVisible()) {
-            this.missile.setCoordinates(
-                    new Coordinates(
-                            this.coordinates.getX() + this.imageIcon.getIconWidth() / 2,
-                            this.coordinates.getY() - this.missile.getImageIcon().getIconHeight(),
-                            Commons.MISSILE_STEP_SIZE
-                    )
-            );
-            this.missile.setVisible(true);
-            Sound.play(this.getClass().getResource(Commons.MISSILE_SOUND));
-        }
+        shootStrategy.shoot(this, missile);
     }
 
 

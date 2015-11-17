@@ -3,15 +3,16 @@ import java.awt.*;
 import java.awt.image.ImageObserver;
 import java.util.Random;
 
-public abstract class Invader extends BoardObject implements MovableInvader {
+public abstract class Invader extends BoardObject implements MovableInvader, Shooter {
     private InvaderType model = null;
+    private Random random;
+    private ShootStrategy shootStrategy;
 
     protected Laser laser;
     protected int points;
     protected int directionX;
     protected int directionY;
     protected int row;
-    private Random random;
 
     public Invader(InvaderType model) {
         super();
@@ -21,6 +22,7 @@ public abstract class Invader extends BoardObject implements MovableInvader {
         this.laser = new Laser();
         this.random = new Random();
         this.row = 0;
+        this.shootStrategy = new ShootLaser();
         this.construct();
     }
 
@@ -104,15 +106,7 @@ public abstract class Invader extends BoardObject implements MovableInvader {
 //        coordinates.setStep((int) (Math.floor(row / Commons.INVADER_GET_FASTER_AFTER_ROWS) + 1));
     }
 
-    private void shoot() {
-        this.laser.setCoordinates(
-                new Coordinates(
-                        this.coordinates.getX() + this.imageIcon.getIconWidth() / 2,
-                        this.coordinates.getY() + this.imageIcon.getIconHeight()
-                )
-        );
-        this.laser.setVisible(true);
-        Sound.play(this.getClass().getResource(Commons.LASER_SOUND));
+    public void shoot() {
+        shootStrategy.shoot(this, this.laser);
     }
-
 }
