@@ -7,12 +7,14 @@ public abstract class Invader extends BoardObject implements MovableInvader, Sho
     private InvaderType model = null;
     private Random random;
     private ShootStrategy shootStrategy;
+    private Player player = Player.getInstance(); // Subject
 
     protected Laser laser;
     protected int points;
     protected int directionX;
     protected int directionY;
     protected int row;
+
 
     public Invader(InvaderType model) {
         super();
@@ -28,6 +30,19 @@ public abstract class Invader extends BoardObject implements MovableInvader, Sho
 
     // Do subclass level processing in this method
     protected abstract void construct();
+
+    // Called by Subject
+    public void handleMissile() {
+        if (this.isVisible() && player.getMissile().isVisible()) {
+            if (player.getMissile().getCoordinates().getX() >= this.getCoordinates().getX() &&
+                    player.getMissile().getCoordinates().getX() <= this.getCoordinates().getX() + this.getImageIcon().getIconWidth() &&
+                    player.getMissile().getCoordinates().getY() >= this.getCoordinates().getY() &&
+                    player.getMissile().getCoordinates().getY() <= this.getCoordinates().getY() + this.getImageIcon().getIconHeight()) {
+                this.die();
+                player.handleKill(this);
+            }
+        }
+    }
 
     public InvaderType getModel() {
         return model;

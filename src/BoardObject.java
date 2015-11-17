@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.ImageObserver;
 
-public abstract class BoardObject {
+public abstract class BoardObject implements Dieable {
     protected ImageIcon imageIcon;
     protected Coordinates coordinates;
     protected boolean visible;

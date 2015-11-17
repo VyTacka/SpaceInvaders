@@ -66,9 +66,6 @@ public class Board extends JPanel implements Runnable {
             // Move invaders
             invaders.move();
             invaders.paint(graphics, this);
-
-            // Handle player missile killing invaders
-            handleMissile();
         } else {
             printMessage(Commons.START_GAME_TEXT, graphics);
         }
@@ -135,6 +132,8 @@ public class Board extends JPanel implements Runnable {
             row++;
         }
 
+        player.addAllInvaders(invaders.getInvaders());
+
         if (!isRunning || animationThread == null) {
             animationThread = new Thread(this);
             animationThread.start();
@@ -177,12 +176,6 @@ public class Board extends JPanel implements Runnable {
             for (int i = 0; i < player.getLives() - 1; i++) {
                 graphics.drawImage(imageIcon.getImage(), Commons.BOARD_WIDTH - Commons.BOARD_BORDER - (i + 1) * (imageIcon.getIconWidth() + Commons.PLAYER_PADDING), Commons.BOARD_BORDER - imageIcon.getIconHeight(), this);
             }
-        }
-    }
-
-    public void handleMissile() {
-        if (player.getMissile().isVisible()) {
-            invaders.handleMissiles();
         }
     }
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Invaders implements MovableInvader {
 
-    List<Invader> invaders = new ArrayList<Invader>();
+    List<Invader> invaders = new ArrayList<>();
     Player player = Player.getInstance();
     Missile missile = player.getMissile();
 
@@ -83,30 +83,5 @@ public class Invaders implements MovableInvader {
             }
         }
         return false;
-    }
-
-    public void handleMissiles() {
-        for (Invader invader : invaders) {
-            if (invader.isVisible() && missile.isVisible()) {
-                if (missile.getCoordinates().getX() >= invader.getCoordinates().getX() &&
-                        missile.getCoordinates().getX() <= invader.getCoordinates().getX() + invader.getImageIcon().getIconWidth() &&
-                        missile.getCoordinates().getY() >= invader.getCoordinates().getY() &&
-                        missile.getCoordinates().getY() <= invader.getCoordinates().getY() + invader.getImageIcon().getIconHeight()) {
-                    invader.die();
-                    missile.die();
-                    player.addKill();
-                    player.addScore(invader.getPoints());
-
-                    // If first kill
-                    if (player.getKills() == 1) {
-                        Sound.play(this.getClass().getResource(Commons.FIRSTBLOOD_SOUND));
-                    } else
-                        // If missile is above invader middle
-                        if (missile.getCoordinates().getY() <= invader.getCoordinates().getY() + invader.getImageIcon().getIconHeight() / 2) {
-                            Sound.play(this.getClass().getResource(Commons.HEADSHOT_SOUND));
-                        }
-                }
-            }
-        }
     }
 }

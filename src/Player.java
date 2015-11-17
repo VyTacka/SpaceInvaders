@@ -1,11 +1,13 @@
 import javax.swing.*;
-import java.awt.*;
+import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.ImageObserver;
+import java.util.*;
 
 public class Player extends BoardObject implements Shooter {
     private static Player ourInstance = new Player();
     private ShootStrategy shootStrategy;
+    private java.util.List<Invader> invaders = new ArrayList<>();
 
     protected Missile missile;
     protected int lives;
@@ -71,6 +73,43 @@ public class Player extends BoardObject implements Shooter {
         this.blinking = blinking;
     }
 
+    // Add observer
+    public void addInvader(Invader invader) {
+        invaders.add(invader);
+    }
+
+    public void addAllInvaders(List<Invader> invaders) {
+        this.invaders.addAll(invaders);
+    }
+
+    // Remove observer
+    public void removeInvader(Invader invader) {
+        invaders.remove(invader);
+    }
+
+    // Notify observers
+    public void notifyInvaders() {
+        for (Invader invader : invaders) {
+            invader.handleMissile();
+        }
+    }
+
+    public void handleKill(Invader invader) {
+        this.missile.die();
+        this.addKill();
+        this.addScore(invader.getPoints());
+
+        // If first kill
+        if (this.kills == 1) {
+            Sound.play(this.getClass().getResource(Commons.FIRSTBLOOD_SOUND));
+        } else {
+            // If missile is above invader middle
+            if (this.missile.getCoordinates().getY() <= invader.coordinates.getY() + invader.imageIcon.getIconHeight() / 2) {
+                Sound.play(this.getClass().getResource(Commons.HEADSHOT_SOUND));
+            }
+        }
+    }
+
     @Override
     public void paint(Graphics graphics, ImageObserver observer) {
         if (this.isVisible()) {
@@ -79,6 +118,7 @@ public class Player extends BoardObject implements Shooter {
 
         if (this.missile.isVisible()) {
             this.missile.paint(graphics, observer);
+            this.notifyInvaders();
         }
 
         if (this.isDying()) {
