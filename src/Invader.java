@@ -15,7 +15,6 @@ public abstract class Invader extends BoardObject implements MovableInvader, Sho
     protected int directionY;
     protected int row;
 
-
     public Invader(InvaderType model) {
         super();
         this.model = model;
