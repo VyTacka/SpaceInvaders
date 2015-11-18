@@ -32,7 +32,7 @@ public abstract class Invader extends BoardObject implements MovableInvader, Sho
     protected abstract void construct();
 
     // Called by Subject
-    public void handleMissile() {
+    public boolean handleMissile() {
         if (this.isVisible() && player.getMissile().isVisible()) {
             if (player.getMissile().getCoordinates().getX() >= this.getCoordinates().getX() &&
                     player.getMissile().getCoordinates().getX() <= this.getCoordinates().getX() + this.getImageIcon().getIconWidth() &&
@@ -40,8 +40,12 @@ public abstract class Invader extends BoardObject implements MovableInvader, Sho
                     player.getMissile().getCoordinates().getY() <= this.getCoordinates().getY() + this.getImageIcon().getIconHeight()) {
                 this.die();
                 player.handleKill(this);
+
+                return true;
             }
         }
+
+        return false;
     }
 
     public InvaderType getModel() {

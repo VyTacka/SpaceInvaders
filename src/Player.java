@@ -90,7 +90,9 @@ public class Player extends BoardObject implements Shooter {
     // Notify observers
     public void notifyInvaders() {
         for (Invader invader : invaders) {
-            invader.handleMissile();
+            if (invader.handleMissile()) {
+                return;
+            }
         }
     }
 
