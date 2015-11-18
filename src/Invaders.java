@@ -7,7 +7,6 @@ public class Invaders implements MovableInvader {
 
     List<Invader> invaders = new ArrayList<>();
     Player player = Player.getInstance();
-    Missile missile = player.getMissile();
 
     public void add(Invader invader) {
         invaders.add(invader);
