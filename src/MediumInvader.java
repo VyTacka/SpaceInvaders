@@ -12,6 +12,6 @@ public class MediumInvader extends Invader {
 
     @Override
     protected void construct() {
-        System.out.println("Creating medium invader");
+        LoggerChain.getInstance().getChain().log(Logger.DEBUG, "creating MediumInvader");
     }
 }

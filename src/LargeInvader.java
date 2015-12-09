@@ -12,6 +12,6 @@ public class LargeInvader extends Invader {
 
     @Override
     protected void construct() {
-        System.out.println("Creating large invader");
+        LoggerChain.getInstance().getChain().log(Logger.DEBUG, "creating LargeInvader");
     }
 }

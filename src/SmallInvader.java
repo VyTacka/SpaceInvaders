@@ -12,6 +12,6 @@ public class SmallInvader extends Invader {
 
     @Override
     protected void construct() {
-        System.out.println("Creating small invader");
+        LoggerChain.getInstance().getChain().log(Logger.DEBUG, "creating SmallInvader");
     }
 }

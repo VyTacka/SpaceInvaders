@@ -37,6 +37,7 @@ public class Board extends JPanel implements Runnable {
                 isRunning = false;
                 printMessage(Commons.GAME_OVER_TEXT, graphics);
                 Sound.play(this.getClass().getResource(Commons.GAME_OVER_SOUND));
+                LoggerChain.getInstance().getChain().log(Logger.INFO, "Player died");
                 return;
             }
 
@@ -45,6 +46,7 @@ public class Board extends JPanel implements Runnable {
                 isRunning = false;
                 printMessage(Commons.VICTORY_TEXT, graphics);
                 Sound.play(this.getClass().getResource(Commons.FLAWLESS_VICTORY_SOUND));
+                LoggerChain.getInstance().getChain().log(Logger.INFO, "Victory");
                 return;
             }
 
@@ -53,6 +55,7 @@ public class Board extends JPanel implements Runnable {
                 isRunning = false;
                 printMessage(Commons.INVASION_TEXT, graphics);
                 Sound.play(this.getClass().getResource(Commons.GAME_OVER_SOUND));
+                LoggerChain.getInstance().getChain().log(Logger.INFO, "Invasion");
             }
 
             // Green ground line
@@ -91,6 +94,8 @@ public class Board extends JPanel implements Runnable {
     }
 
     public void initialize() {
+        LoggerChain.getInstance().getChain().log(Logger.DEBUG, "start Board.initialize()");
+
         int row = 0;
         for (int i = 0; i < Commons.SMALL_INVADER_ROWS; i++) {
             for (int j = 0; j < Commons.SMALL_INVADER_COLUMNS; j++) {
@@ -153,6 +158,9 @@ public class Board extends JPanel implements Runnable {
             animationThread.start();
             Sound.play(this.getClass().getResource(Commons.PLAY_SOUND));
         }
+
+        LoggerChain.getInstance().getChain().log(Logger.DEBUG, "end Board.initialize()");
+        LoggerChain.getInstance().getChain().log(Logger.INFO, "Game started");
     }
 
     public void printMessage(String message, Graphics graphics) {

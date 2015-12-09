@@ -11,6 +11,6 @@ public class NullInvader extends Invader {
 
     @Override
     protected void construct() {
-        System.out.println("Creating NULL invader");
+        LoggerChain.getInstance().getChain().log(Logger.DEBUG, "creating NullInvader");
     }
 }
