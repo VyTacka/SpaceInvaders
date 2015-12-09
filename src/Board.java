@@ -41,7 +41,7 @@ public class Board extends JPanel implements Runnable {
             }
 
             // if player killed all invaders
-            if (player.getKills() == invaders.size()) {
+            if (invaders.size() == 0) {
                 isRunning = false;
                 printMessage(Commons.VICTORY_TEXT, graphics);
                 Sound.play(this.getClass().getResource(Commons.FLAWLESS_VICTORY_SOUND));
@@ -121,6 +121,20 @@ public class Board extends JPanel implements Runnable {
         for (int i = 0; i < Commons.LARGE_INVADER_ROWS; i++) {
             for (int j = 0; j < Commons.LARGE_INVADER_COLUMNS; j++) {
                 Invader invader = InvaderFactory.createInvader(InvaderType.LARGE);
+                invader.setCoordinates(
+                        new Coordinates(
+                                (Commons.LARGE_INVADER_PADDING + invader.getImageIcon().getIconWidth()) * j + Commons.BOARD_BORDER,
+                                (Commons.LARGE_INVADER_PADDING + invader.getImageIcon().getIconHeight()) * row + Commons.BOARD_BORDER * 2
+                        )
+                );
+                invaders.add(invader);
+            }
+            row++;
+        }
+        // Tests NullObject pattern
+        for (int i = 0; i < 1; i++) {
+            for (int j = 0; j < Commons.LARGE_INVADER_COLUMNS; j++) {
+                Invader invader = InvaderFactory.createInvader(InvaderType.MEGA);
                 invader.setCoordinates(
                         new Coordinates(
                                 (Commons.LARGE_INVADER_PADDING + invader.getImageIcon().getIconWidth()) * j + Commons.BOARD_BORDER,

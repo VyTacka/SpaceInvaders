@@ -4,7 +4,6 @@ import java.awt.image.ImageObserver;
 import java.util.Random;
 
 public abstract class Invader extends BoardObject implements MovableInvader, Shooter {
-    private InvaderType model = null;
     private Random random;
     private ShootStrategy shootStrategy;
     private Player player = Player.getInstance(); // Subject
@@ -15,9 +14,8 @@ public abstract class Invader extends BoardObject implements MovableInvader, Sho
     protected int directionY;
     protected int row;
 
-    public Invader(InvaderType model) {
+    public Invader() {
         super();
-        this.model = model;
         this.directionX = 1;
         this.directionY = 0;
         this.laser = new Laser();
@@ -45,14 +43,6 @@ public abstract class Invader extends BoardObject implements MovableInvader, Sho
         }
 
         return false;
-    }
-
-    public InvaderType getModel() {
-        return model;
-    }
-
-    public void setModel(InvaderType model) {
-        this.model = model;
     }
 
     public int getPoints() {

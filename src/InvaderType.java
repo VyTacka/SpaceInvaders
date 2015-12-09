@@ -1,3 +1,3 @@
 public enum InvaderType {
-    SMALL, MEDIUM, LARGE
+    SMALL, MEDIUM, LARGE, MEGA
 }

@@ -17,7 +17,13 @@ public class Invaders implements MovableInvader {
     }
 
     public int size() {
-        return invaders.size();
+        int count = 0;
+
+        for (Invader invader : invaders) {
+            count += invader.isVisible() ? 1 : 0;
+        }
+
+        return count;
     }
 
     public List<Invader> getInvaders() {
